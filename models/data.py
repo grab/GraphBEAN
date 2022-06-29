@@ -6,10 +6,16 @@ from torch_geometric.data import Data
 from torch_geometric.typing import OptTensor
 from torch_sparse.tensor import SparseTensor
 
+
 class BipartiteData(Data):
-    def __init__(self, adj: SparseTensor, 
-                 xu: OptTensor = None, xv: OptTensor = None, 
-                 xe: OptTensor = None, **kwargs):
+    def __init__(
+        self,
+        adj: SparseTensor,
+        xu: OptTensor = None,
+        xv: OptTensor = None,
+        xe: OptTensor = None,
+        **kwargs
+    ):
         super().__init__()
         self.adj = adj
         self.xu = xu
@@ -20,7 +26,7 @@ class BipartiteData(Data):
             setattr(self, key, value)
 
     def __inc__(self, key, value, *args, **kwargs):
-        if key == 'adj':
+        if key == "adj":
             return torch.tensor([[self.xu.size(0)], [self.xv.size(0)]])
         else:
             return super().__inc__(key, value, *args, **kwargs)

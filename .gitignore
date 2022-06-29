@@ -1,0 +1,25 @@
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+
+# python generated files #
+##########################
+*.pyc
+*/venv/
+
+# ide generated directories
+.cache
+.vscode
+
+# pytest generated files #
+##########################
+.pytest_cache
+
+# jupyter generated files #
+##########################
+.ipynb_checkpoints/
+
+# emacs autosave files
+\#*
+*~

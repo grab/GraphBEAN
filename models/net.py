@@ -14,7 +14,7 @@ from typing import Tuple, Union, Dict
 from models.conv import BEANConv
 
 
-def make_tuple(x: Union[int, Tuple[int,int,int], Tuple[int,int]], repeat: int = 3):
+def make_tuple(x: Union[int, Tuple[int, int, int], Tuple[int, int]], repeat: int = 3):
     if isinstance(x, int):
         if repeat == 2:
             return (x, x)
@@ -30,16 +30,19 @@ def apply_relu_dropout(x: Tensor, dropout_prob: float, training: bool) -> Tensor
         x = F.dropout(x, p=dropout_prob, training=training)
     return x
 
+
 class GraphBEAN(nn.Module):
-    def __init__(self, 
-                in_channels: Union[int, Tuple[int,int,int]], 
-                hidden_channels: Union[int, Tuple[int,int,int]] = 32,
-                latent_channels: Union[int, Tuple[int,int]] = 64,
-                edge_pred_latent: int = 64,
-                n_layers_encoder: int = 4,
-                n_layers_decoder: int = 4,
-                n_layers_mlp: int = 4,
-                dropout_prob: float = 0.0):
+    def __init__(
+        self,
+        in_channels: Union[int, Tuple[int, int, int]],
+        hidden_channels: Union[int, Tuple[int, int, int]] = 32,
+        latent_channels: Union[int, Tuple[int, int]] = 64,
+        edge_pred_latent: int = 64,
+        n_layers_encoder: int = 4,
+        n_layers_decoder: int = 4,
+        n_layers_mlp: int = 4,
+        dropout_prob: float = 0.0,
+    ):
 
         super().__init__()
 
@@ -71,10 +74,12 @@ class GraphBEAN(nn.Module):
 
             if i == self.n_layers_encoder - 1:
                 self.encoder_convs.append(
-                    BEANConv(in_channels, out_channels, node_self_loop=False))
+                    BEANConv(in_channels, out_channels, node_self_loop=False)
+                )
             else:
                 self.encoder_convs.append(
-                    BEANConv(in_channels, out_channels, node_self_loop=True))
+                    BEANConv(in_channels, out_channels, node_self_loop=True)
+                )
 
     def create_feature_decoder(self):
         self.decoder_convs = nn.ModuleList()
@@ -89,8 +94,7 @@ class GraphBEAN(nn.Module):
                 in_channels = self.hidden_channels
                 out_channels = self.hidden_channels
 
-            self.decoder_convs.append(
-                BEANConv(in_channels, out_channels))
+            self.decoder_convs.append(BEANConv(in_channels, out_channels))
 
     def create_structure_decoder(self):
         self.u_mlp_layers = nn.ModuleList()
@@ -102,15 +106,19 @@ class GraphBEAN(nn.Module):
             else:
                 in_channels = (self.edge_pred_latent, self.edge_pred_latent)
             out_channels = self.edge_pred_latent
-                
-            self.u_mlp_layers.append(
-                Linear(in_channels[0], out_channels))
-            
-            self.v_mlp_layers.append(
-                Linear(in_channels[1], out_channels))
 
-    def forward(self, xu: Tensor, xv: Tensor, xe: Tensor, adj: SparseTensor, 
-                edge_pred_samples: SparseTensor) -> Dict[str, Tensor]:
+            self.u_mlp_layers.append(Linear(in_channels[0], out_channels))
+
+            self.v_mlp_layers.append(Linear(in_channels[1], out_channels))
+
+    def forward(
+        self,
+        xu: Tensor,
+        xv: Tensor,
+        xe: Tensor,
+        adj: SparseTensor,
+        edge_pred_samples: SparseTensor,
+    ) -> Dict[str, Tensor]:
 
         # encoder
         for i, conv in enumerate(self.encoder_convs):
@@ -119,7 +127,7 @@ class GraphBEAN(nn.Module):
                 xu = apply_relu_dropout(xu, self.dropout_prob, self.training)
                 xv = apply_relu_dropout(xv, self.dropout_prob, self.training)
                 xe = apply_relu_dropout(xe, self.dropout_prob, self.training)
-               
+
         # get latent vars
         zu, zv = xu, xv
 
@@ -149,8 +157,6 @@ class GraphBEAN(nn.Module):
         eprob = torch.sigmoid(torch.sum(zu2_edge * zv2_edge, dim=1))
 
         # collect results
-        result = { 'xu': xu, 'xv': xv, 'xe': xe,
-                   'zu': zu, 'zv': zv, 'eprob': eprob }
-        
-        return result
+        result = {"xu": xu, "xv": xv, "xe": xe, "zu": zu, "zv": zv, "eprob": eprob}
 
+        return result

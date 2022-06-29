@@ -14,13 +14,17 @@ from torch_geometric.nn.dense.linear import Linear
 
 from torch_geometric.typing import PairTensor, OptTensor
 
+
 class BEANConv(MessagePassing):
-    
-    def __init__(self, in_channels: Tuple[int, int, Optional[int]],
-                 out_channels: Tuple[int, int, Optional[int]], 
-                 node_self_loop: bool = True,
-                 normalize: bool = True,
-                 bias: bool = True, **kwargs):  
+    def __init__(
+        self,
+        in_channels: Tuple[int, int, Optional[int]],
+        out_channels: Tuple[int, int, Optional[int]],
+        node_self_loop: bool = True,
+        normalize: bool = True,
+        bias: bool = True,
+        **kwargs
+    ):
 
         super(BEANConv, self).__init__(**kwargs)
 
@@ -29,13 +33,17 @@ class BEANConv(MessagePassing):
         self.node_self_loop = node_self_loop
         self.normalize = normalize
 
-        self.input_has_edge_channel = (len(in_channels) == 3)
-        self.output_has_edge_channel = (len(out_channels) == 3)
+        self.input_has_edge_channel = len(in_channels) == 3
+        self.output_has_edge_channel = len(out_channels) == 3
 
         if self.input_has_edge_channel:
             if self.node_self_loop:
-                self.in_channels_u = in_channels[0] + 2 * in_channels[1] + 2 * in_channels[2]
-                self.in_channels_v = 2 * in_channels[0] + in_channels[1] + 2 * in_channels[2]
+                self.in_channels_u = (
+                    in_channels[0] + 2 * in_channels[1] + 2 * in_channels[2]
+                )
+                self.in_channels_v = (
+                    2 * in_channels[0] + in_channels[1] + 2 * in_channels[2]
+                )
             else:
                 self.in_channels_u = 2 * in_channels[1] + 2 * in_channels[2]
                 self.in_channels_v = 2 * in_channels[0] + 2 * in_channels[2]
@@ -68,8 +76,9 @@ class BEANConv(MessagePassing):
         if self.output_has_edge_channel:
             self.lin_e.reset_parameters()
 
-    def forward(self, x: PairTensor, adj: SparseTensor, 
-                xe: OptTensor = None) -> Tuple[PairTensor, Tensor]:
+    def forward(
+        self, x: PairTensor, adj: SparseTensor, xe: OptTensor = None
+    ) -> Tuple[PairTensor, Tensor]:
         """"""
 
         assert self.input_has_edge_channel == (xe is not None)
@@ -88,11 +97,12 @@ class BEANConv(MessagePassing):
             out_v = self.bn_v(out_v)
             if self.output_has_edge_channel:
                 out_e = self.bn_e(out_e)
-        
+
         return (out_u, out_v), out_e
 
-    def message_and_aggregate(self, adj: SparseTensor,
-                              x: PairTensor, xe: OptTensor) -> Tuple[PairTensor, Tensor]:
+    def message_and_aggregate(
+        self, adj: SparseTensor, x: PairTensor, xe: OptTensor
+    ) -> Tuple[PairTensor, Tensor]:
 
         xu, xv = x
         adj = adj.set_value(None, layout=None)
@@ -116,45 +126,35 @@ class BEANConv(MessagePassing):
         msg_2e = None
         if xe is not None:
             if self.node_self_loop:
-                msg_2u = torch.cat((xu, 
-                                    msg_v2u_mean, msg_v2u_sum,
-                                    msg_e2u_mean, msg_e2u_sum),
-                                    dim=1)
-                msg_2v = torch.cat((xv, 
-                                    msg_u2v_mean, msg_u2v_sum,
-                                    msg_e2v_mean, msg_e2v_sum),
-                                    dim=1)
+                msg_2u = torch.cat(
+                    (xu, msg_v2u_mean, msg_v2u_sum, msg_e2u_mean, msg_e2u_sum), dim=1
+                )
+                msg_2v = torch.cat(
+                    (xv, msg_u2v_mean, msg_u2v_sum, msg_e2v_mean, msg_e2v_sum), dim=1
+                )
             else:
-                msg_2u = torch.cat((msg_v2u_mean, msg_v2u_sum,
-                                    msg_e2u_mean, msg_e2u_sum),
-                                    dim=1)
-                msg_2v = torch.cat((msg_u2v_mean, msg_u2v_sum,
-                                    msg_e2v_mean, msg_e2v_sum),
-                                    dim=1)
+                msg_2u = torch.cat(
+                    (msg_v2u_mean, msg_v2u_sum, msg_e2u_mean, msg_e2u_sum), dim=1
+                )
+                msg_2v = torch.cat(
+                    (msg_u2v_mean, msg_u2v_sum, msg_e2v_mean, msg_e2v_sum), dim=1
+                )
 
             if self.output_has_edge_channel:
-                msg_2e = torch.cat((xe, 
-                                    xu[adj.storage.row()],
-                                    xv[adj.storage.col()]),
-                                    dim=1)         
+                msg_2e = torch.cat(
+                    (xe, xu[adj.storage.row()], xv[adj.storage.col()]), dim=1
+                )
         else:
             if self.node_self_loop:
-                msg_2u = torch.cat((xu, 
-                                    msg_v2u_mean, msg_v2u_sum),
-                                    dim=1)
-                msg_2v = torch.cat((xv, 
-                                    msg_u2v_mean, msg_u2v_sum),
-                                    dim=1)
+                msg_2u = torch.cat((xu, msg_v2u_mean, msg_v2u_sum), dim=1)
+                msg_2v = torch.cat((xv, msg_u2v_mean, msg_u2v_sum), dim=1)
             else:
-                msg_2u = torch.cat((msg_v2u_mean, msg_v2u_sum),
-                                    dim=1)
-                msg_2v = torch.cat((msg_u2v_mean, msg_u2v_sum),
-                                    dim=1)
+                msg_2u = torch.cat((msg_v2u_mean, msg_v2u_sum), dim=1)
+                msg_2v = torch.cat((msg_u2v_mean, msg_u2v_sum), dim=1)
 
             if self.output_has_edge_channel:
-                msg_2e = torch.cat((xu[adj.storage.row()],
-                                    xv[adj.storage.col()]),
-                                    dim=1)  
+                msg_2e = torch.cat(
+                    (xu[adj.storage.row()], xv[adj.storage.col()]), dim=1
+                )
 
         return (msg_2u, msg_2v), msg_2e
-
