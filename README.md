@@ -39,7 +39,7 @@ We construct the graph datasets by loading the csv and construct PyG graph data.
 - `movies-large` dataset: `python data_movies.py`
 - `movies-small` dataset: `python data_movies_small.py`
 
-`Note`: for `finefoods` and `movies`, we use `sentence-transformer` to generate features from the review text. Running the graph construction on machine with GPU support is recommended. The size of the data is also quite large. Therefore, a machine with large memmory size is required (60GB or 120GB).
+`Note`: for `finefoods` and `movies`, we use `sentence-transformer` to generate features from the review text. Running the graph construction on a machine with GPU support is recommended. The size of `finefoods` and `movies` is also quite large. Therefore, a machine with large memmory size is required (60GB or 120GB). 
 
 The script will convert the csv files into PyG graph format, and constrcut 10 different copies of the graph by injecting random anomalies into the graph via `anomaly_insert.py`. Each graph instance will have different sets of anomalies. 
 
