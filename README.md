@@ -98,7 +98,7 @@ The argument `--name` indicates which dataset we want the model run on, with the
     --eta                     : structure decoder loss weight [default: 0.2]
     --score-agg               : aggregation method for node anomaly score
                                 (max or mean) [default: max]      
-    --scheduler-milestones    : milestones for learning scheduler             
+    --scheduler-milestones    : milestones for learning scheduler [default: []]            
     ```
 - Arguments for `GraphBEAN` (sample training).
     ```
@@ -109,14 +109,16 @@ The argument `--name` indicates which dataset we want the model run on, with the
                                 suggestion: set it as the number of available cores  
     ```
 
+Running the experiments on a machine with GPU support is recommended for all models except IsolationForest.
+
 ## License
 
-This repository is licenced under the MIT License.
+This repository is licenced under the [MIT License](LICENSE).
 
 ## Citation
 
 If you use this repository for academic purpose, please cite the following paper:
 
 ```
-Fathony,........
+Rizal Fathony, Jenn Ng, Jia Chen ..... ....
 ```
