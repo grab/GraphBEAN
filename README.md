@@ -1,13 +1,12 @@
-# Interaction-Focused Anomaly Detection on Bipartite Node-and-Edge-Attributed Graph
+# Interaction-Focused Anomaly Detection on Bipartite Node-and-Edge-Attributed Graphs
 
-This repository contains the experimental source code of the *Interaction-Focused Anomaly Detection on Bipartite Node-and-Edge-Attributed Graph* paper published in ... . 
+This repository contains the experimental source code of the [*Interaction-Focused Anomaly Detection on Bipartite Node-and-Edge-Attributed Graphs*](https://engineering.grab.com/graph-anomaly-model) paper presented at the [International Joint Conference on Neural Networks (IJCNN) 2023](https://2023.ijcnn.org/). 
+
 Authors: [Rizal Fathony](mailto:rizal.fathony@grab.com), [Jenn Ng](mailto:jenn.ng@grab.com), and [Jia Chen](mailto:jia.chen@grab.com).
 
 ## Abstract
 
-Anomaly detection has received increasing interest due to the serious implication of anomaly occurrence in many areas. Many of its applications naturally produce datasets that can be represented as bipartite graphs (user–interaction–item graphs). Furthermore, each entity and interaction in the graph are usually supplied with rich information, making the attributed graph on both nodes and edges become the preferred formalization of the problem. Unfortunately, previous graph neural network methods for detecting anomalies only focus on graphical structure and node information to determine which behaviors are anomalous. They do not consider the rich interactions in the graph, which need to be incorporated into the model to produce high-performance detections.
-
-We propose a new graph anomaly detection model that focuses on the rich interactions in the graph. Specifically, our model incorporates the graph structure, node features of both user and item, as well as the interaction’s edge features. The model outputs anomaly scoring functions for each type of node and a scoring function for the edge to determine which user/item are anomalous and which interactions contribute to the anomaly. Our graph neural network architecture is scalable, enabling applications on large real-world datasets. Finally, we demonstrate the empirical benefit of our method against previous models in several public datasets.
+Many anomaly detection applications naturally produce datasets that can be represented as bipartite graphs (user–interaction–item graphs). These graph datasets are usually supplied with rich information on both the entities (nodes) and the interactions (edges). Unfortunately, previous graph neural network anomaly models are unable to fully capture the rich information and produce high-performing detections on these graphs, as they mostly focus on homogeneous graphs and node attributes only. To overcome the problem, we propose a new graph anomaly detection model that focuses on the rich interactions in bipartite graphs. Specifically, our model takes a bipartite node-and-edge-attributed graph and produces anomaly scores for each of its edges and then for each of its bipartite nodes. We design our model as an autoencoder-type model with a customized encoder and decoder to facilitate the compression of node features, edge features, and graph structure into node-level latent representations. The reconstruction errors of each edge and node are then leveraged to spot the anomalies. Our network architecture is scalable, enabling large real-world applications. Finally, we demonstrate that our method significantly outperforms previous anomaly detection methods in the experiments.
 
 ## Setup
 
@@ -120,5 +119,5 @@ This repository is licenced under the [MIT License](LICENSE).
 If you use this repository for academic purpose, please cite the following paper:
 
 ```
-Rizal Fathony, Jenn Ng, Jia Chen ..... ....
+Rizal Fathony, Jenn Ng, Jia Chen. "Interaction-Focused Anomaly Detection on Bipartite Node-and-Edge-Attributed Graphs." In "International Joint Conference on Neural Networks (IJCNN) 2023". IEEE, 2023.
 ```
