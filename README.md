@@ -119,4 +119,4 @@ This repository is licenced under the [MIT License](LICENSE).
 If you use this repository for academic purpose, please cite the following paper:
 
 
-> Rizal Fathony, Jenn Ng, Jia Chen. "Interaction-Focused Anomaly Detection on Bipartite Node-and-Edge-Attributed Graphs." In "International Joint Conference on Neural Networks (IJCNN) 2023". IEEE, 2023.
+> R. Fathony, J. Ng and J. Chen, "Interaction-Focused Anomaly Detection on Bipartite Node-and-Edge-Attributed Graphs," 2023 International Joint Conference on Neural Networks (IJCNN), Gold Coast, Australia, 2023, pp. 1-10, doi: 10.1109/IJCNN54540.2023.10191331.
